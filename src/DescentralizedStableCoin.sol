@@ -28,7 +28,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title DescentralizedStableCoin
- * @author Pacific Typhoon 
+ * @author Jorge Zerpa 
  * Collateral: Exogenus (ETH & BTC)
  * Minting: Algorithmic
  * Relative Stability: pegged to USD
