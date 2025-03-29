@@ -125,7 +125,22 @@ contract DSCEngine is ReentrancyGuard {
     /////////////////////////
     //////// External Functions
     /////////////////////////
-    function  depositCollateralAndMintDSC() external {}
+
+    /**
+     * 
+     * @param tokenCollateralAddress The address of the token to deposit collateral 
+     * @param amounCollateral The amout of collateral to deposit 
+     * @param amountDSCToMint the amount of descentralized stablecoin to mint 
+     * @notice This function will deposit your collateral and mint DSC in one transaction
+     */
+    function  depositCollateralAndMintDSC(
+        address tokenCollateralAddress, 
+        uint256 amounCollateral,
+        uint256 amountDSCToMint
+    ) external {
+        depositCollateral(tokenCollateralAddress, amounCollateral);
+        mintDSC(amountDSCToMint);
+    }
 
     /** 
      * @notice follows CEI (checks, effects, interactions)
@@ -135,7 +150,7 @@ contract DSCEngine is ReentrancyGuard {
     function depositCollateral(
         address tokenCollateralAddress, 
         uint256 amountCollateral
-    ) external moreThanZero(amountCollateral) isAllowedToken(tokenCollateralAddress) nonReentrant {
+    ) public moreThanZero(amountCollateral) isAllowedToken(tokenCollateralAddress) nonReentrant {
         s_collateralDeposited[msg.sender][tokenCollateralAddress] += amountCollateral;
         emit CollateralDeposited(msg.sender, tokenCollateralAddress, amountCollateral);
     
@@ -154,7 +169,7 @@ contract DSCEngine is ReentrancyGuard {
      * @param amountDSCToMint The amount of descentralize stable coin to mint
      * @notice They must have more collateral value than the minimum threshold 
      */
-    function mintDSC(uint256 amountDSCToMint) external moreThanZero(amountDSCToMint) nonReentrant {
+    function mintDSC(uint256 amountDSCToMint) public moreThanZero(amountDSCToMint) nonReentrant {
         s_dscMinted[msg.sender] += amountDSCToMint;
         _revertIfHealthFactorIsBroken(msg.sender);
         bool minted = i_dsc.mint(msg.sender, amountDSCToMint);
